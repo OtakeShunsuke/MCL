@@ -130,7 +130,7 @@ class Observation:
 
 
 
-actual_landmarks = Landmarks(np.array([[-0.5,0.0],[0.5,0.0],[0.0,0.5]]))
+actual_landmarks = Landmarks(np.array([[-0.5,0.0],[0.5,0.0],[0.3,1.0],[0.0,0.3]]))
 actual_landmarks.draw()
 
 
@@ -248,7 +248,7 @@ class Robot:
 def draw(i,observations):
     fig = plt.figure(1,figsize=(8, 8))
     sp = fig.add_subplot(111, aspect='equal')
-    sp.set_xlim(-1.0,1.0)
+    sp.set_xlim(-1.0,2.0)
     sp.set_ylim(-0.5,1.5)
 
     robot.draw(sp,observations)
@@ -261,7 +261,7 @@ def draw(i,observations):
 robot = Robot(0.5,0,0)      # ロボットを原点に
 
 # 観測、描画、移動の繰り返し
-for i in range(0,18):
+for i in range(0,38):
     obss = robot.observation(actual_landmarks)
     draw(i,obss)
     robot.move(0.2,math.pi / 180.0 * 20)
