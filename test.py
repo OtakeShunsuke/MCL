@@ -59,13 +59,21 @@ class Observation:
         # ロボットからランドマークまでの距離の真値を算出
         distance = math.sqrt((rx-self.true_lx)**2 + (ry-self.true_ly)**2)
         if distance > self.sensor_max_range or distance < self.sensor_min_range:
+            print("distance")
             return
         
         # ロボットからランドマークがどの方向に見えるか真値を算出
+        while(rt>2*math.pi):
+            rt-=2*math.pi
+        while(rt<-2*math.pi):
+            rt+=2*math.pi
+
         direction = math.atan2(self.true_ly-ry, self.true_lx-rx) - rt
         if direction > math.pi:    direction -= 2*math.pi
         if direction < -math.pi:   direction += 2*math.pi     
         if direction > self.sensor_max_angle or direction < self.sensor_min_angle:
+            print("direction:"+str(round(direction,2))+" rt:"+str(round(rt,2)))
+
             return
         
         # 真値に混入する雑音の大きさ（標準偏差）を設定
@@ -130,7 +138,7 @@ class Observation:
 
 
 
-actual_landmarks = Landmarks(np.array([[-0.5,0.0],[0.5,0.0],[0.3,1.0],[0.0,0.3]]))
+actual_landmarks = Landmarks(np.array([[-0.5,0.0],[0.5,0.0],[1.0,1.0],[0.0,0.3]]))
 actual_landmarks.draw()
 
 
@@ -166,7 +174,7 @@ class ParticleFilter:
         num = len(self.particles)                # numはパーティクルの個数
         ws = [e.w for e in self.particles]    # 重みのリストを作る
         
-        print(sum(ws))
+        #print(sum(ws))
         if sum(ws) < 1e-100:                     #重みの和がゼロに丸め込まれるとサンプリングできなくなるので小さな数を足しておく
             ws = [e + 1e-100 for e in ws]
             
@@ -201,6 +209,8 @@ class Robot:
         actual_fw = random.gauss(fw,fw/10)    #進む距離に対して標準偏差10%の雑音を混入
         dir_error = random.gauss(0.0, math.pi / 180.0 * 3.0) # 前進方向がヨレる雑音を標準偏差3[deg]で混入
         
+        #print(actual_fw)
+
         px, py, pt = pos
         # 移動後の位置を算出
         x = px + actual_fw * math.cos(pt + dir_error)
@@ -222,7 +232,8 @@ class Robot:
         for i,landmark in enumerate(landmarks.positions):            # 3つあるランドマークを1つずつ観測
             obss.append(Observation(self.actual_poses[-1],landmark,i))
             obss = list(filter(lambda e : e.lid != None, obss))            # 観測データのないものを除去
-            
+        
+        print(obss)
         # 重みに尤度をかける
         for obs in obss:
             for p in self.pf.particles:
@@ -258,7 +269,7 @@ def draw(i,observations):
     plt.legend()
 
 
-robot = Robot(0.5,0,0)      # ロボットを原点に
+robot = Robot(-0.1,0.3,0)      # ロボットを原点に
 
 # 観測、描画、移動の繰り返し
 for i in range(0,38):
