@@ -222,6 +222,23 @@ class Robot:
     def move(self, fw, rot):
         self.actual_poses.append(self.motion(self.actual_poses[-1], fw, rot))
         self.pf.moveParticles(fw, rot, self.motion)
+     # ロボットがランドマーク観測するときに呼び出すメソッド
+    def observation(self, landmarks):
+        obss = []
+        # 3つあるランドマークを1つずつ観測
+        for i, landmark in enumerate(landmarks.positions):
+            obss.append(Observation(self.actual_poses[-1], landmark, i))
+            obss = list(filter(lambda e: e.lid != None, obss)
+                        )            # 観測データのないものを除去
+
+        print(obss[0].distance )
+        # 重みに尤度をかける
+        for obs in obss:
+            for p in self.pf.particles:
+                p.w *= obs.likelihood(p.pos)
+
+        # 描画用に観測のリストを返す
+        return obss
 
     # 描画用
     def draw(self, sp, observations):
