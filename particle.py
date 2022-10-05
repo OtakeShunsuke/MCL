@@ -1,8 +1,10 @@
 import numpy as np
-import random
+from copy import copy
 import math
-import matplotlib as plt
-import copy
+import random
+import matplotlib.pyplot as plt  # for plotting data
+from matplotlib.patches import Ellipse  # for drawing
+
 
 
 class Gaussian2D:
@@ -75,7 +77,6 @@ class Observation:
             direction += 2*math.pi
         if direction > self.sensor_max_angle or direction < self.sensor_min_angle:
             print("direction:"+str(round(direction, 2))+" rt:"+str(round(rt, 2)))
-
             return
 
         # 真値に混入する雑音の大きさ（標準偏差）を設定
