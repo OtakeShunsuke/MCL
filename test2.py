@@ -1,4 +1,4 @@
-import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import random
@@ -27,7 +27,7 @@ while True:
         theta=0
     #後退加速
     elif keyboard.is_pressed("x"):
-        acceleration_x-=0.1w    
+        acceleration_x-=0.1
     #変更なし
     elif keyboard.is_pressed("q"):
         pass
@@ -46,5 +46,6 @@ while True:
     sp.scatter(x, y)
 
     plt.pause(1)
+    plt.clf()
 
     i+=1
