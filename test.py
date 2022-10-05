@@ -282,7 +282,6 @@ def draw(i, observations):
 
     plt.legend()
 
-
 robot = Robot(-0.1, 0.3, 0)      # ロボットを原点に
 
 # 観測、描画、移動の繰り返し
