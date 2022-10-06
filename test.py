@@ -246,7 +246,11 @@ class Robot:
             obss = list(filter(lambda e: e.lid != None, obss)
                         )            # 観測データのないものを除去
 
+<<<<<<< HEAD
         #print(obss)
+=======
+        print(obss[0].distance )
+>>>>>>> 6cc34c822c31927e734cc4d8a34355684e7c83c8
         # 重みに尤度をかける
         for obs in obss:
             for p in self.pf.particles:
