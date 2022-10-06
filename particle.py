@@ -72,9 +72,9 @@ class Observation:
             rt += 2*math.pi
 
         direction = math.atan2(self.true_ly-ry, self.true_lx-rx) - rt
-        if direction > math.pi:
+        while(direction > math.pi):
             direction -= 2*math.pi
-        if direction < -math.pi:
+        while(direction < -math.pi):
             direction += 2*math.pi
         if direction > self.sensor_max_angle or direction < self.sensor_min_angle:
             #print("direction:"+str(round(direction, 2))+" rt:"+str(round(rt, 2)))
@@ -145,12 +145,21 @@ class Observation:
         rx, ry, rt = robot_pos
         r_mean= math.sqrt((rx-self.true_lx)**2 + (ry-self.true_ly)**2)
         direction_mean=math.atan2(self.true_ly-ry, self.true_lx-rx) - rt
-        ans=norm.pdf(self.distance-r_mean,0,self.sigma_distance)*norm.pdf(self.direction-direction_mean,0,self.sigma_direction)+1e-100
+
+        while(direction_mean > math.pi):
+            direction_mean -= 2*math.pi
+        while(direction_mean < -math.pi):
+            direction_mean += 2*math.pi
+
+        ans=norm.pdf(self.distance-r_mean,0,self.sigma_distance)*norm.pdf(self.direction-direction_mean,0,self.sigma_direction)
+        if ans>1:
+            ans=1
+        
         print(ans)
         return ans
 
 actual_landmarks = Landmarks(
-    np.array([[-0.5, 0.0], [0.5, 0.0], [1.0, 1.0], [0.0, 0.3]]))
+    np.array([[-0.5, 0.5], [0.5, 0.0], [1.0, 1.0], [0.0, 0.3],[-0.3, 0.9]]))
 actual_landmarks.draw()
 
 
@@ -265,7 +274,7 @@ class Robot:
 
 
 def draw(i, observations):
-    fig = plt.figure(1, figsize=(8, 8))
+    fig = plt.figure(1, figsize=(4, 4))
     sp = fig.add_subplot(111, aspect='equal')
     sp.set_xlim(-1.0, 1.0)
     sp.set_ylim(-0.5, 1.5)
@@ -286,4 +295,3 @@ for i in range(0, 50):
     robot.move(0.2, math.pi / 180.0 * 20)
     plt.pause(0.1)
     plt.clf()
-
