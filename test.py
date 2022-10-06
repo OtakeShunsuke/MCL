@@ -76,7 +76,7 @@ class Observation:
         if direction < -math.pi:
             direction += 2*math.pi
         if direction > self.sensor_max_angle or direction < self.sensor_min_angle:
-            print("direction:"+str(round(direction, 2))+" rt:"+str(round(rt, 2)))
+            #ßprint("direction:"+str(round(direction, 2))+" rt:"+str(round(rt, 2)))
 
             return
 
@@ -143,7 +143,7 @@ class Observation:
 
 
 actual_landmarks = Landmarks(
-    np.array([[-0.5, 0.0], [0.5, 0.0], [1.0, 1.0], [0.0, 0.3],[-0.5,1.2]]))
+    np.array([[-0.5, 0.0],  [1.0, 1.0], [0.0, 0.3],[-0.5,1.2]]))
 #actual_landmarks.draw()
 
 
@@ -163,7 +163,7 @@ class ParticleFilter:
         self.particles = []
         for i in range(num):
             # パーティクルは重みを持つ。全パーティクルの重みの合計は1。1つのパーティクルの重みは1/個数
-            self.particles.append(Particle(0.0, 0.0, 0.0, 1.0/num))
+            self.particles.append(Particle(1.0, 0.0, 0.0, 1.0/num))
 
     # ロボットが動いたときにパーティクルを動かすためのメソッド
     # 引数の「motion」はメソッドで、ロボットの移動を再現するためのもの。
@@ -246,7 +246,7 @@ class Robot:
             obss = list(filter(lambda e: e.lid != None, obss)
                         )            # 観測データのないものを除去
 
-        print(obss)
+        #print(obss)
         # 重みに尤度をかける
         for obs in obss:
             for p in self.pf.particles:
@@ -285,7 +285,7 @@ def draw(i, observations):
 robot = Robot(-0.1, 0.3, 0)      # ロボットを原点に
 
 # 観測、描画、移動の繰り返し
-for i in range(0, 50):
+for i in range(0, 100):
     obss = robot.observation(actual_landmarks)
     draw(i, obss)
     robot.move(0.2, math.pi / 180.0 * 20)
